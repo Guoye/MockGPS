@@ -1,5 +1,24 @@
 # MockGPS
 
+### 整合用户ms1728源码
+可直接下载使用：`/MockGPS/app/release/MockGPS_20210220.apk`
+
+##### 开发
+如果进行开发重新打包，需要修改配置(按照示例代码进行修改成自己的地址)
+- `build.gradle` 11行
+- `local.properties` 12行
+
+##### 安装使用
+如发现定位时发生闪退情况，可能由于未给予写入权限，如下。
+
+允许管理所有文件
+
+![image](https://user-images.githubusercontent.com/6322888/127121748-0307a3f1-2dce-4c09-8ce3-73b4866fced7.png)
+
+经测试可运行于安卓11
+
+----
+
 Author：Nero
 
 修改Android系统的GPS定位
