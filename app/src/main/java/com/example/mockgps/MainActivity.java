@@ -2,7 +2,6 @@ package com.example.mockgps;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -25,14 +24,15 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import androidx.core.app.ActivityCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
@@ -127,6 +127,7 @@ import org.apache.log4j.Logger;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SensorEventListener {
 
+    private static final int REQUEST_CODE = 1024;
     private final int SDK_PERMISSION_REQUEST = 127;
     private String permissionInfo;
 
@@ -1248,6 +1249,7 @@ public class MainActivity extends AppCompatActivity
 
 
         mBaiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
+
             /**
              * 单击地图
              */
@@ -1263,13 +1265,12 @@ public class MainActivity extends AppCompatActivity
             /**
              * 单击地图中的POI点
              */
-            public boolean onMapPoiClick(MapPoi poi) {
+            public void onMapPoiClick(MapPoi poi) {
                 currentPt = poi.getPosition();
 //                DisplayToast("BD09\n[维度:" + poi.getPosition().latitude + "]\n[经度:" + poi.getPosition().longitude + "]");
                 //百度坐标系转wgs坐标系
                 transformCoordinate(String.valueOf(poi.getPosition().longitude), String.valueOf(poi.getPosition().latitude));
                 updateMapState();
-                return false;
             }
         });
         mBaiduMap.setOnMapLongClickListener(new BaiduMap.OnMapLongClickListener() {
@@ -1456,6 +1457,9 @@ public class MainActivity extends AppCompatActivity
             if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
             }
+            if (checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                permissions.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+            }
             //悬浮窗
 //            if (checkSelfPermission(Manifest.permission.SYSTEM_ALERT_WINDOW) != PackageManager.PERMISSION_GRANTED) {
 //                permissions.add(Manifest.permission.SYSTEM_ALERT_WINDOW);
@@ -1499,6 +1503,17 @@ public class MainActivity extends AppCompatActivity
 
         } else {
             return true;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        log.debug("存储权限获取>>>>>>>>>>>>>>>>>>>>>>>");
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                log.debug("存储权限获取失败");
+            }
         }
     }
 

@@ -378,7 +378,7 @@ public class MockGpsService extends Service {
 //        } else {
         try {
             locationManager.addTestProvider(LocationManager.GPS_PROVIDER, false, true, true,
-                    false, true, true, true, 0, 5);
+                    false, true, true, true, Criteria.POWER_LOW, Criteria.ACCURACY_FINE);
             Log.d(TAG, "addTestProvider[GPS_PROVIDER] success");
             log.debug(TAG + ": addTestProvider[GPS_PROVIDER] success");
         }catch (Exception e){
